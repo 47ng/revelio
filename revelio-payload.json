@@ -1,0 +1,14 @@
+{
+  "sha256": "102e9399dd5c2005111fd64604046930805ddfa61da9521768565b3747631bc5",
+  "signature": "a19633e4e04a71857816e33448d05d3c758325a20c6cd5fceae8e982acf603f9",
+  "date": "2019-02-19T08:40:15",
+  "source": {
+    "repository": "https://github.com/franky47/blog",
+    "commit": "https://github.com/franky47/blog/commit/0dac5913de458fdeafb92dee2db73ee14df3c808",
+    "build": "https://travis.com/franky47/blog/42"
+  },
+  "meta": {
+    "name": "franky47/blog",
+    "some": "other stuff"
+  }
+}

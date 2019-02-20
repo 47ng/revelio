@@ -1,0 +1,9 @@
+[workspace]
+members = [
+  #'revelio-server',
+  #'revelio-report',
+  #'revelio-verify',
+  'lib/niffler',
+  #'lib/snitch',
+  #'lib/accio',
+]
