@@ -1,0 +1,16 @@
+language: rust
+rust:
+  - stable
+#   - beta
+#   - nightly
+# matrix:
+#   allow_failures:
+#     - rust: nightly
+#   fast_finish: true
+
+script:
+  - cargo test  --all --verbose
+  - cargo build --all --verbose --release
+  - cargo run niffler --release
+
+cache: cargo
