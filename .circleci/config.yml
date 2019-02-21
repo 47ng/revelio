@@ -39,7 +39,7 @@ jobs:
       #       rustup run stable cargo run niffler --release
       - run:
           name: Test
-          command: rustup run stable cargo test
+          command: rustup run nightly cargo test -- --test-threads=1
       # - run:
       #     name: Upload Coverage
       #     command: ./scripts/codecov.sh
