@@ -11,6 +11,6 @@ rust:
 script:
   - cargo test  --all --verbose
   - cargo build --all --verbose --release
-  - cargo run revelio-report --release
+  - cargo run --bin revelio-report --release
 
 cache: cargo
