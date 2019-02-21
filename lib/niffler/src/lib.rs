@@ -8,14 +8,13 @@ struct TravisEnv {
   // Detection
   ci: bool,
   travis: bool,
-
-  #[serde(rename = "TRAVIS_COMMIT")]
+  #[serde(rename = "travis_commit")]
   commit: String,
 
-  #[serde(rename = "TRAVIS_REPO_SLUG")]
+  #[serde(rename = "travis_repo_slug")]
   repo_slug: String,
 
-  #[serde(rename = "TRAVIS_JOB_WEB_URL")]
+  #[serde(rename = "travis_job_web_url")]
   job_web_url: String,
 }
 
@@ -25,13 +24,13 @@ struct CircleEnv {
   ci: bool,
   circleci: bool,
 
-  #[serde(rename = "CIRCLE_SHA1")]
+  #[serde(rename = "circle_sha1")]
   sha1: String,
 
-  #[serde(rename = "CIRCLE_BUILD_URL")]
+  #[serde(rename = "circle_build_url")]
   build_url: String,
 
-  #[serde(rename = "CIRCLE_REPOSITORY_URL")]
+  #[serde(rename = "circle_repository_url")]
   repository_url: String,
 }
 
