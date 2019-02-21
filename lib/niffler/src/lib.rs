@@ -59,7 +59,7 @@ enum CiEnv {
 
 // --
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct BuildInfo {
   /// URL of the build job on the CI platform
   pub build_url: String,

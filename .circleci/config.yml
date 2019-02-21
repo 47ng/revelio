@@ -29,7 +29,7 @@ jobs:
             rustup run nightly rustc --version --verbose
             rustup run nightly cargo --version --verbose
             rustup run nightly cargo build --release --all --verbose
-            rustup run nightly cargo run niffler --release
+            rustup run nightly cargo run revelio-report --release
       # - run:
       #     name: Stable Build
       #     command: |
