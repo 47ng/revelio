@@ -42,6 +42,9 @@ struct CircleEnv {
   #[serde(rename = "circle_project_username")]
   repository_org: String,
 
+  /// Compare URL could be empty (first deployment or config issues)
+  ///
+  /// https://discuss.circleci.com/t/does-circleci-2-0-work-with-monorepos/10378/16
   #[serde(rename = "circle_compare_url")]
   compare_url: String,
 }
