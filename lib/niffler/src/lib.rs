@@ -36,11 +36,11 @@ struct CircleEnv {
   #[serde(rename = "circle_repository_url")]
   git_url: String,
 
-  #[serde(rename = "circle_project_reponame")]
-  repository_name: String,
-
   #[serde(rename = "circle_project_username")]
   repository_org: String,
+
+  #[serde(rename = "circle_project_reponame")]
+  repository_name: String,
 
   /// Compare URL could be empty (first deployment or config issues)
   ///
@@ -140,22 +140,15 @@ pub fn detect() -> Option<BuildInfo> {
 
 #[test]
 fn travis() {
-  std::env::set_var("CI", "true");
-  std::env::set_var("TRAVIS", "true");
-  let info = detect();
-  assert!(info.is_none()); // Missing required environment variables
-
-  std::env::set_var(
-    "TRAVIS_JOB_WEB_URL",
-    "https://travis-ci.com/foo/bar/jobs/42",
-  );
-  std::env::set_var("TRAVIS_COMMIT", "cafebabe");
-  std::env::set_var("TRAVIS_REPO_SLUG", "egg/spam");
-  std::env::set_var("TRAVIS_COMMIT_RANGE", "aa...ff");
-
-  let info = detect();
-  assert!(info.is_some());
-  let info = info.unwrap();
+  let info: BuildInfo = CiEnv::Travis(TravisEnv {
+    ci: true,
+    travis: true,
+    commit: String::from("cafebabe"),
+    repo_slug: String::from("egg/spam"),
+    job_web_url: String::from("https://travis-ci.com/foo/bar/jobs/42"),
+    commit_range: String::from("aa...ff"),
+  })
+  .into();
 
   assert_eq!(info.commit_sha1, "cafebabe");
   assert_eq!(info.build_url, "https://travis-ci.com/foo/bar/jobs/42");
@@ -168,35 +161,24 @@ fn travis() {
     info.commit_url,
     "https://github.com/egg/spam/commit/cafebabe"
   );
-
-  // Cleanup
-  std::env::remove_var("CI");
-  std::env::remove_var("TRAVIS");
-  std::env::remove_var("TRAVIS_JOB_WEB_URL");
-  std::env::remove_var("TRAVIS_COMMIT");
-  std::env::remove_var("TRAVIS_REPO_SLUG");
-  std::env::remove_var("TRAVIS_COMMIT_RANGE");
 }
 
 // -----------------------------------------------------------------------------
 
 #[test]
 fn circle_github() {
-  std::env::set_var("CI", "true");
-  std::env::set_var("CIRCLECI", "true");
-  let info = detect();
-  assert!(info.is_none()); // Missing required environment variables
+  let info: BuildInfo = CiEnv::Circle(CircleEnv {
+    ci: true,
+    circleci: true,
+    sha1: String::from("facade42"),
+    build_url: String::from("https://circleci.com/gh/foo/bar/42"),
+    git_url: String::from("git@github.com:baz/qux.git"),
+    repository_org: String::from("egg"),
+    repository_name: String::from("spam"),
+    compare_url: String::from("https://example.com/compare/aa...ff"),
+  })
+  .into();
 
-  std::env::set_var("CIRCLE_BUILD_URL", "https://circleci.com/gh/foo/bar/42");
-  std::env::set_var("CIRCLE_SHA1", "facade42");
-  std::env::set_var("CIRCLE_REPOSITORY_URL", "git@github.com:baz/qux.git");
-  std::env::set_var("CIRCLE_PROJECT_USERNAME", "egg");
-  std::env::set_var("CIRCLE_PROJECT_REPONAME", "spam");
-  std::env::set_var("CIRCLE_COMPARE_URL", "https://example.com/compare/aa...ff");
-
-  let info = detect();
-  assert!(info.is_some());
-  let info = info.unwrap();
   assert_eq!(info.commit_sha1, "facade42");
   assert_eq!(info.build_url, "https://circleci.com/gh/foo/bar/42");
   assert_eq!(info.sources_url, "https://github.com/egg/spam");
@@ -205,37 +187,24 @@ fn circle_github() {
     info.commit_url,
     "https://github.com/egg/spam/commit/facade42"
   );
-
-  // Cleanup
-  std::env::remove_var("CI");
-  std::env::remove_var("CIRCLECI");
-  std::env::remove_var("CIRCLE_BUILD_URL");
-  std::env::remove_var("CIRCLE_SHA1");
-  std::env::remove_var("CIRCLE_REPOSITORY_URL");
-  std::env::remove_var("CIRCLE_PROJECT_USERNAME");
-  std::env::remove_var("CIRCLE_PROJECT_REPONAME");
-  std::env::remove_var("CIRCLE_COMPARE_URL");
 }
 
 // -----------------------------------------------------------------------------
 
 #[test]
 fn circle_bitbucket() {
-  std::env::set_var("CI", "true");
-  std::env::set_var("CIRCLECI", "true");
-  let info = detect();
-  assert!(info.is_none()); // Missing required environment variables
+  let info: BuildInfo = CiEnv::Circle(CircleEnv {
+    ci: true,
+    circleci: true,
+    sha1: String::from("facade42"),
+    build_url: String::from("https://circleci.com/bb/foo/bar/42"),
+    git_url: String::from("git@bitbucket.org:baz/qux.git"),
+    repository_org: String::from("egg"),
+    repository_name: String::from("spam"),
+    compare_url: String::from("https://example.com/compare/aa...ff"),
+  })
+  .into();
 
-  std::env::set_var("CIRCLE_BUILD_URL", "https://circleci.com/bb/foo/bar/42");
-  std::env::set_var("CIRCLE_SHA1", "facade42");
-  std::env::set_var("CIRCLE_REPOSITORY_URL", "git@bitbucket.org:baz/qux.git");
-  std::env::set_var("CIRCLE_PROJECT_USERNAME", "egg");
-  std::env::set_var("CIRCLE_PROJECT_REPONAME", "spam");
-  std::env::set_var("CIRCLE_COMPARE_URL", "https://example.com/compare/aa...ff");
-
-  let info = detect();
-  assert!(info.is_some());
-  let info = info.unwrap();
   assert_eq!(info.commit_sha1, "facade42");
   assert_eq!(info.build_url, "https://circleci.com/bb/foo/bar/42");
   assert_eq!(info.sources_url, "https://bitbucket.org/egg/spam");
@@ -244,14 +213,4 @@ fn circle_bitbucket() {
     info.commit_url,
     "https://bitbucket.org/egg/spam/commits/facade42"
   );
-
-  // Cleanup
-  std::env::remove_var("CI");
-  std::env::remove_var("CIRCLECI");
-  std::env::remove_var("CIRCLE_BUILD_URL");
-  std::env::remove_var("CIRCLE_SHA1");
-  std::env::remove_var("CIRCLE_REPOSITORY_URL");
-  std::env::remove_var("CIRCLE_PROJECT_USERNAME");
-  std::env::remove_var("CIRCLE_PROJECT_REPONAME");
-  std::env::remove_var("CIRCLE_COMPARE_URL");
 }
