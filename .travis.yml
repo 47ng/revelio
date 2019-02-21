@@ -9,7 +9,7 @@ rust:
 #   fast_finish: true
 
 script:
-  - cargo test  --all --verbose
+  - cargo test  --all --verbose --test-threads=1
   - cargo build --all --verbose --release
   - cargo run niffler --release
 
