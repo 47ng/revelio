@@ -11,5 +11,5 @@ fn main() {
     info,
     payload: hash,
   };
-  println!("{:?}", serde_json::to_string_pretty(&report));
+  println!("{}", serde_json::to_string_pretty(&report).unwrap());
 }
