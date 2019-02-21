@@ -16,6 +16,9 @@ struct TravisEnv {
 
   #[serde(rename = "travis_job_web_url")]
   job_web_url: String,
+
+  #[serde(rename = "travis_commit_range")]
+  commit_range: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -38,6 +41,9 @@ struct CircleEnv {
 
   #[serde(rename = "circle_project_username")]
   repository_org: String,
+
+  #[serde(rename = "circle_compare_url")]
+  compare_url: String,
 }
 
 // --
@@ -59,17 +65,28 @@ pub struct BuildInfo {
   pub sources_url: String,
 
   /// SHA-1 hash of the commit at the HEAD of that build
-  pub commit: String,
+  pub commit_sha1: String,
+
+  /// Public URL to the commit at the HEAD of that build
+  pub commit_url: String,
+
+  /// Public URL to a list of commits that were included in that build
+  pub compare_url: String,
 }
 
 impl From<CiEnv> for BuildInfo {
   fn from(env: CiEnv) -> Self {
     match env {
-      CiEnv::Travis(travis) => Self {
-        build_url: travis.job_web_url,
-        sources_url: format!("https://github.com/{}", travis.repo_slug),
-        commit: travis.commit,
-      },
+      CiEnv::Travis(travis) => {
+        let repo = format!("https://github.com/{}", travis.repo_slug);
+        Self {
+          build_url: travis.job_web_url,
+          sources_url: repo.clone(),
+          commit_sha1: travis.commit.clone(),
+          commit_url: format!("{}/commit/{}", repo, travis.commit),
+          compare_url: format!("{}/compare/{}", repo, travis.commit_range),
+        }
+      }
       CiEnv::Circle(circle) => {
         let sources_url = match circle.git_url {
           ref url if url.contains("github") => format!(
@@ -80,13 +97,19 @@ impl From<CiEnv> for BuildInfo {
             "https://bitbucket.org/{}/{}",
             circle.repository_org, circle.repository_name
           ),
-          _ => circle.git_url, // Unknown CI provider, fallback to Git URL
+          _ => circle.git_url.clone(), // Unknown CI provider, fallback to Git URL
         };
-
+        let commit_url = match sources_url {
+          ref url if url.contains("github") => format!("{}/commit/{}", url, circle.sha1),
+          ref url if url.contains("bitbucket") => format!("{}/commits/{}", url, circle.sha1),
+          _ => circle.git_url,
+        };
         Self {
-        build_url: circle.build_url,
+          build_url: circle.build_url,
           sources_url,
-        commit: circle.sha1,
+          commit_sha1: circle.sha1,
+          commit_url,
+          compare_url: circle.compare_url, // /!\ could be empty
         }
       }
     }
