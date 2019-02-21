@@ -23,13 +23,13 @@ jobs:
       #     command: |
       #       rustfmt --version
       #       cargo fmt -- --write-mode=diff
-       - run:
-           name: Nightly Build
-           command: |
-             rustup run nightly rustc --version --verbose
-             rustup run nightly cargo --version --verbose
-             rustup run nightly cargo build --release --all --verbose
-             rustup run nightly cargo run niffler --release
+      - run:
+          name: Nightly Build
+          command: |
+            rustup run nightly rustc --version --verbose
+            rustup run nightly cargo --version --verbose
+            rustup run nightly cargo build --release --all --verbose
+            rustup run nightly cargo run niffler --release
       # - run:
       #     name: Stable Build
       #     command: |
