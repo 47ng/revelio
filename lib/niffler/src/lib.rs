@@ -122,9 +122,15 @@ impl From<CiEnv> for BuildInfo {
 /// Sniff the environment and try to generate a BuildInfo from it.
 pub fn detect() -> Option<BuildInfo> {
   if let Ok(travis) = envy::from_env::<TravisEnv>() {
+    if !(travis.ci && travis.travis) {
+      return None; // Failed detection
+    }
     return Some(BuildInfo::from(CiEnv::Travis(travis)));
   }
   if let Ok(circle) = envy::from_env::<CircleEnv>() {
+    if !(circle.ci && circle.circleci) {
+      return None; // Failed detection
+    }
     return Some(BuildInfo::from(CiEnv::Circle(circle)));
   }
   None
