@@ -31,7 +31,13 @@ struct CircleEnv {
   build_url: String,
 
   #[serde(rename = "circle_repository_url")]
-  repository_url: String,
+  git_url: String,
+
+  #[serde(rename = "circle_project_reponame")]
+  repository_name: String,
+
+  #[serde(rename = "circle_project_username")]
+  repository_org: String,
 }
 
 // --
@@ -64,11 +70,25 @@ impl From<CiEnv> for BuildInfo {
         sources_url: format!("https://github.com/{}", travis.repo_slug),
         commit: travis.commit,
       },
-      CiEnv::Circle(circle) => Self {
+      CiEnv::Circle(circle) => {
+        let sources_url = match circle.git_url {
+          ref url if url.contains("github") => format!(
+            "https://github.com/{}/{}",
+            circle.repository_org, circle.repository_name
+          ),
+          ref url if url.contains("bitbucket") => format!(
+            "https://bitbucket.org/{}/{}",
+            circle.repository_org, circle.repository_name
+          ),
+          _ => circle.git_url, // Unknown CI provider, fallback to Git URL
+        };
+
+        Self {
         build_url: circle.build_url,
-        sources_url: circle.repository_url,
+          sources_url,
         commit: circle.sha1,
-      },
+        }
+      }
     }
   }
 }
