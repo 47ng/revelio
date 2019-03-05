@@ -1,5 +1,8 @@
 # revelio
 
+![TravisCI Build](https://img.shields.io/travis/com/47ng/revelio.svg?label=Travis)
+![CircleCI Build](https://img.shields.io/circleci/project/github/47ng/revelio/master.svg?label=CircleCI)
+
 **DISCLAIMER**: PoC / WIP - [Feedback is welcome](https://github.com/47ng/revelio/issues) !
 
 Revelio is a service that brings auditability and integrity checks for
