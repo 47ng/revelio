@@ -7,3 +7,7 @@ members = [
   #'lib/snitch',
   #'lib/accio',
 ]
+
+[profile.release]
+lto = true
+panic = 'abort'
