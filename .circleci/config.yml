@@ -7,7 +7,7 @@ jobs:
       # your own using the Dockerfile provided below
       # and replace here. I put my own image here for
       # the example.
-      - image: abronan/rust-circleci:latest
+      - image: circleci/rust:latest
 
     # environment:
     #   # Set your codecov token if your repository is private.
@@ -24,22 +24,22 @@ jobs:
       #       rustfmt --version
       #       cargo fmt -- --write-mode=diff
       - run:
-          name: Nightly Build
-          command: |
-            rustup run nightly rustc --version
-            rustup run nightly cargo --version
-            rustup run nightly cargo build --release --all
-            rustup run nightly cargo run --bin revelio-report --release
+          name: Stable Test
+          command: rustup run stable cargo test
       # - run:
-      #     name: Stable Build
+      #     name: Nightly Build
       #     command: |
-      #       rustup run stable rustc --version
-      #       rustup run stable cargo --version
-      #       rustup run stable cargo build --release --all
-      #       rustup run stable cargo run niffler --release
+      #       rustup run nightly rustc --version
+      #       rustup run nightly cargo --version
+      #       rustup run nightly cargo build --release --all
+      #       rustup run nightly cargo run --bin revelio-report --release
       - run:
-          name: Test
-          command: rustup run nightly cargo test
+          name: Stable Build
+          command: |
+            rustup run stable rustc --version
+            rustup run stable cargo --version
+            rustup run stable cargo build --release --all
+            rustup run stable cargo run niffler --release
       # - run:
       #     name: Upload Coverage
       #     command: ./scripts/codecov.sh
