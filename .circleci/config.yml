@@ -18,6 +18,10 @@ jobs:
       - checkout
       - restore_cache:
           key: revelio-cache-v1
+
+      - run:
+          name: Install toolchains
+          command: rustup toolchain install stable-x86_64-unknown-linux-gnu
       # - run:
       #     name: Check formatting
       #     command: |
@@ -36,7 +40,6 @@ jobs:
       - run:
           name: Stable Build
           command: |
-            rustup toolchain install stable-x86_64-unknown-linux-gnu
             rustup run stable rustc --version
             rustup run stable cargo --version
             rustup run stable cargo build --release --all
