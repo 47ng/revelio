@@ -9,8 +9,8 @@ rust:
 #   fast_finish: true
 
 script:
-  - cargo test  --all --verbose
-  - cargo build --all --verbose --release
+  - cargo test  --all
+  - cargo build --all --release
   - cargo run --bin revelio-report --release
 
 cache: cargo
