@@ -1,7 +1,7 @@
 # revelio
 
-![TravisCI Build](https://img.shields.io/travis/com/47ng/revelio.svg?label=Travis)
-![CircleCI Build](https://img.shields.io/circleci/project/github/47ng/revelio/master.svg?label=CircleCI)
+[![TravisCI Build](https://img.shields.io/travis/com/47ng/revelio.svg?label=Travis)](https://travis-ci.com/47ng/revelio)
+[![CircleCI Build](https://img.shields.io/circleci/project/github/47ng/revelio/master.svg?label=CircleCI)](https://circleci.com/gh/47ng/revelio)
 
 **DISCLAIMER**: PoC / WIP - [Feedback is welcome](https://github.com/47ng/revelio/issues) !
 
