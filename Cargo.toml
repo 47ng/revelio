@@ -4,6 +4,7 @@ members = [
   'revelio-report',
   #'revelio-verify',
   'lib/niffler',
+  'lib/reducto',
   #'lib/snitch',
   #'lib/accio',
 ]
