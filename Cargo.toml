@@ -1,7 +1,7 @@
 [workspace]
 members = [
   #'revelio-server',
-  'revelio-report',
+  'revelio',
   #'revelio-verify',
   'lib/niffler',
   'lib/reducto',
