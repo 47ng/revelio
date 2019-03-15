@@ -47,7 +47,11 @@ pub fn run(root_path: &PathBuf) -> ArtifactPathMap {
     return map;
   }
   assert!(root_path.is_dir());
-  for entry in WalkDir::new(root_path).follow_links(true) {
+  let walker = WalkDir::new(root_path).follow_links(true).into_iter();
+  let ignore_previous_reports =
+    |entry: &DirEntry| entry.file_name().to_str().unwrap_or("") != "revelio.json";
+
+  for entry in walker.filter_entry(ignore_previous_reports) {
     if let Ok(entry) = entry {
       let path = entry.path().to_path_buf();
       if path.is_file() {
