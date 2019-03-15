@@ -4,12 +4,13 @@ extern crate serde_derive;
 mod report;
 
 fn main() {
-  let info = niffler::detect().unwrap();
-  let root = std::env::current_dir().unwrap();
-  let hash = hashdir::DirNode::from_path(&root, &root).unwrap();
+  let context = niffler::detect().expect("Could not detect environment");
+  let root = std::path::PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/src"));
+  let payloads = reducto::run(&root);
   let report = report::Report {
-    info,
-    payload: hash,
+    version: 1,
+    context,
+    payloads,
   };
   println!("{}", serde_json::to_string_pretty(&report).unwrap());
 }

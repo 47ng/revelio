@@ -3,6 +3,7 @@
 /// All URLs stored in these fields should be publicly accessible on the web
 /// (ie: not behind a paywall or requiring subscription to a free service).
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct BuildInfo {
   /// URL of the build job on the CI platform
   ///
