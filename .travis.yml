@@ -11,7 +11,7 @@ before_deploy:
   - mkdir -p dist
   - cp -f target/release/revelio ./dist
   - strip dist/revelio
-  - dist/revelio -p ./dist -u https://github.com/47ng/revelio/releases/download/${TRAVIS_TAG}/
+  - dist/revelio generate -p ./dist -u https://github.com/47ng/revelio/releases/download/${TRAVIS_TAG}/
   - cat dist/.well-known/revelio.json
 
 deploy:
