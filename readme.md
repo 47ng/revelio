@@ -5,42 +5,32 @@
 
 **DISCLAIMER**: PoC / WIP - [Feedback is welcome](https://github.com/47ng/revelio/issues) !
 
-Revelio is a service that brings auditability and integrity checks for
-open-source projects that live on the web.
+Revelio brings auditability and integrity checks for open-source projects
+that live on the web.
 
 It tries to answer the question:
 
-> It's open-source, but how can I know what runs is really what's been built ?
+> How do I link what's running to the public source code ?
 
-By linking integrity (checking that built artifacts have not been tampered
-with at any point in storage or transport) with auditability (linking to the
-public build process that created the artifacts and the original sources),
+By linking auditability (linking to the public build process that created the
+artifacts and the original sources) with integrity (checking that built
+artifacts have not been tampered with at any point in storage or transport),
 Revelio automates transparency checks.
 
-## Project Structure
+## The `revelio` CLI tool
 
-- `revelio-server`: The service's REST API. Handles the following tasks:
-  - creating tokens for publishers (v1)
-  - publishing deployment manifests (PoC)
-  - checking deployment manifests against a public URL (PoC)
-- `revelio-reporter`: A CLI tool to use in your public CI to generate and
-  send reports to the Revelio service. Has the following parts:
+`revelio` is a command-line tool that does the following things:
 
-  - `hashdir`: Calculate cryptographic hashes for the artifacts
-  - `niffler`: Sniffs the environment for auditability data
-  - `snitch`: Reports back to the Revelio service
+- When running in a public CI, generate a `revelio.json` file.
+- Validate a URL that contains a valid `/.well-known/revelio.json` file.
 
-- `revelio-checker`: A CLI tool to check a domain and obtain information
-  (build process URL, path to the sources with commit information).
-  Has the following parts:
-  - `accio`: Retrieve artifacts from a source
-  - `hashdir`: Computes the same hashes as `revelio-reporter` to check
+For more details, see [the documentation for `revelio`](./revelio/readme.md).
 
-## CI Servers
+## Supported CI Servers
 
-- TravisCI
-- CircleCI
-- GitLab CI
-- Jenkins
-- Bitbucket Pipelines
-- Azure Pipelines
+- [x] TravisCI _(only supported on travis-ci.com)_
+- [x] CircleCI _(GitHub and BitBucket support)_
+- [ ] _GitLab CI_
+- [ ] _Azure Pipelines_
+- [ ] _Bitbucket Pipelines_
+- [ ] _Jenkins_
