@@ -1,16 +1,25 @@
 language: rust
 rust:
   - stable
-#   - beta
-#   - nightly
-# matrix:
-#   allow_failures:
-#     - rust: nightly
-#   fast_finish: true
-
 script:
   - cargo test  --all
   - cargo build --all --release
-  - cargo run --bin revelio-report --release
-
 cache: cargo
+
+before_deploy:
+  # Dogfood
+  - cargo run --bin revelio-report --release > revelio.json
+  - cat revelio.json
+  - strip target/release/revelio-report
+
+deploy:
+  provider: releases
+  api_key:
+    secure: uHh7mX+At04YOvSPzKeO185dHazxZPYTZFwqjVFY7WprUIHDLLFmmtRuQoOF9twWJM9RdDPNmfg0s4AEQiyQXte6AwBrOEIELcNLC/aTohTQ0ItZLXEtkzp1tFi85pI7wU52e72Zc6KzP9F2Ble4N+SLRxUfXp6o/giBSDRQ6J7FPNSFYSACVWYKY7/PiG1KJAnViDmnnF1mz3E9uD3xAnxJghGrbNZHk5/UzQes7BydGUfzfHbMcfcYWkTGnT8XaKOXnRqLhEvsE8NgVRmtA2LH5kBgURhSz5BxHs3IMLkMMfw3+W1sTQ0TU1g075bN8uRPbq/53upmQC+WAeKq0VedIyeudx7XqVpE9GUOUIyN8uEUkH+sOv5YU2d8Aw2HuJcSLD6RxW+IVrqIXLZoxc3P7CNRU2n1WyTEer4inPGfHWzU/P3qX+IL8wF5PfSS8hMEAE82xi8At0DXBLPAomr0HHsOJYTQzjTQyIjR7HbsV/DSiOI3LxqioFUnQfj5/dSB8hwnXvmNqF5c/MyII18PLN5fDOKIFBNdnyplufXdkIphN98r+GbjP1lrLalS83NwxLL9wsPf9ZFRhLvmYjes8+ese05ON/f3joLodi37O1d0ewy3GkFp5O78RWgpZAw/M2NBhmOxTGk0tD61ew9LK7Yi2fa8K+bN+dQrfEU=
+  file:
+    - revelio.json
+    - target/release/revelio-report
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: 47ng/revelio
