@@ -2,6 +2,7 @@
 #![deny(missing_docs)]
 
 use base64;
+use scourgify::url;
 use sha2::digest::FixedOutput;
 use sha2::{Digest, Sha256};
 use std::path::PathBuf;
@@ -77,11 +78,7 @@ fn hash_file(path: &ArtifactPath) -> std::io::Result<ArtifactHash> {
 ///
 /// This will generate URLs where the artifacts can be publicly accessed.
 fn prepend_url(path_map: ArtifactPathMap, base_url: &str) -> ArtifactUrlMap {
-  // Make sure base_url ends with a trailing slash:
-  let base_url = match base_url.ends_with("/") {
-    true => String::from(base_url),
-    false => String::from(base_url) + "/",
-  };
+  let base_url = url::sanitize(base_url);
   path_map
     .iter()
     .map(|(path, hash)| {
@@ -110,17 +107,17 @@ fn hash_missing_file() {
 }
 
 #[test]
-fn prepend_url_without_trailing_slash() {
+fn prepend_domain() {
   let mut path_map = ArtifactPathMap::new();
   path_map.insert(PathBuf::from("foo"), String::from("hash:foo"));
   path_map.insert(PathBuf::from("bar"), String::from("hash:bar"));
-  let url_map = prepend_url(path_map, "https://example.com");
+  let url_map = prepend_url(path_map, "example.com");
   assert_eq!(url_map.get("https://example.com/foo").unwrap(), "hash:foo");
   assert_eq!(url_map.get("https://example.com/bar").unwrap(), "hash:bar");
 }
 
 #[test]
-fn prepend_url_with_trailing_slash() {
+fn prepend_https_url_with_trailing_slash() {
   let mut path_map = ArtifactPathMap::new();
   path_map.insert(PathBuf::from("foo"), String::from("hash:foo"));
   path_map.insert(PathBuf::from("bar"), String::from("hash:bar"));

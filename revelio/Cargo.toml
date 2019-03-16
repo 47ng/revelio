@@ -17,3 +17,4 @@ chrono = "0.4.6"
 mkdirp = "0.1.0"
 niffler = { path = "../lib/niffler" }
 reducto = { path = "../lib/reducto" }
+scourgify = { path = "../lib/scourgify" }

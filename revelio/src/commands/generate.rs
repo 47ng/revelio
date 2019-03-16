@@ -1,7 +1,7 @@
 use crate::report::Report;
-use crate::url;
 use chrono::prelude::*;
 use mkdirp::mkdirp;
+use scourgify::url;
 use std::path::PathBuf;
 
 pub fn run(path: &PathBuf, base_url: &str) {

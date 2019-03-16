@@ -1,4 +1,4 @@
-use crate::url;
+use scourgify::url;
 
 pub fn run(url: &str) {
   let revelio_url = url::sanitize(url) + ".well-known/revelio.json";

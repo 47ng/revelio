@@ -1,12 +1,11 @@
 [workspace]
 members = [
-  #'revelio-server',
   'revelio',
-  #'revelio-verify',
+  #'lib/accio',
   'lib/niffler',
   'lib/reducto',
+  'lib/scourgify',
   #'lib/snitch',
-  #'lib/accio',
 ]
 
 [profile.release]

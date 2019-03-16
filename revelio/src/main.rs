@@ -8,7 +8,6 @@ use structopt::StructOpt;
 
 mod commands;
 mod report;
-mod url;
 
 use commands::{run, Commands};
 
