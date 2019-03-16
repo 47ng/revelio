@@ -27,30 +27,19 @@ pub type ArtifactPathMap = std::collections::HashMap<ArtifactPath, ArtifactHash>
 /// Map of artifact URLs to their hashes
 pub type ArtifactUrlMap = std::collections::HashMap<ArtifactUrl, ArtifactHash>;
 
-/// Generate the hash of a file's content
-fn hash_file(path: &ArtifactPath) -> std::io::Result<ArtifactHash> {
-  let contents = std::fs::read(path)?;
-  let mut hash = Sha256::default();
-  hash.input(contents);
-  Ok(format!("sha256:{}", base64::encode(&hash.fixed_result())))
-}
-
-/// Recursively walk the given path to build a ArtifactMap
+/// Recursively walk the given path to build a ArtifactUrlMap
 ///
 /// If the given path is a file, it will be the only entry in the map.
 /// Otherwise, the directory will be recursively traversed to generate a flat
 /// map of path/hash key/value pairs.
-pub fn run(root_path: &PathBuf) -> ArtifactPathMap {
+pub fn run(root_path: &PathBuf, base_url: &str) -> ArtifactUrlMap {
   let mut map = ArtifactPathMap::new();
   if root_path.is_file() {
     map.insert(root_path.to_path_buf(), hash_file(&root_path).unwrap());
-    return map;
+    return prepend_url(map, base_url);
   }
   assert!(root_path.is_dir());
   let walker = WalkDir::new(root_path).follow_links(true).into_iter();
-  let ignore_previous_reports =
-    |entry: &DirEntry| entry.file_name().to_str().unwrap_or("") != "revelio.json";
-
   for entry in walker.filter_entry(ignore_previous_reports) {
     if let Ok(entry) = entry {
       let path = entry.path().to_path_buf();
@@ -62,13 +51,32 @@ pub fn run(root_path: &PathBuf) -> ArtifactPathMap {
       }
     }
   }
-  map
+  prepend_url(map, base_url)
+}
+
+// -----------------------------------------------------------------------------
+
+/// Filter out previous reports from directory walking
+///
+/// If running multiple times in the same directory, the previously generated
+/// `revelio.json` file would show up in the contents of the new one.
+/// This filter ensures the file is skipped from analysis if found.
+fn ignore_previous_reports(entry: &DirEntry) -> bool {
+  entry.file_name().to_str().unwrap_or("") != "revelio.json"
+}
+
+/// Generate the hash of a file's content
+fn hash_file(path: &ArtifactPath) -> std::io::Result<ArtifactHash> {
+  let contents = std::fs::read(path)?;
+  let mut hash = Sha256::default();
+  hash.input(contents);
+  Ok(format!("sha256:{}", base64::encode(&hash.fixed_result())))
 }
 
 /// Prepend a base_url to the artifact paths
 ///
 /// This will generate URLs where the artifacts can be publicly accessed.
-pub fn prepend_url(path_map: ArtifactPathMap, base_url: &str) -> ArtifactUrlMap {
+fn prepend_url(path_map: ArtifactPathMap, base_url: &str) -> ArtifactUrlMap {
   // Make sure base_url ends with a trailing slash:
   let base_url = match base_url.ends_with("/") {
     true => String::from(base_url),
@@ -84,6 +92,8 @@ pub fn prepend_url(path_map: ArtifactPathMap, base_url: &str) -> ArtifactUrlMap 
     })
     .collect()
 }
+
+// -----------------------------------------------------------------------------
 
 #[test]
 fn hash_known_file() {
