@@ -43,7 +43,7 @@ jobs:
             rustup run stable rustc --version
             rustup run stable cargo --version
             rustup run stable cargo build --release --all
-            rustup run stable cargo run --bin revelio-report --release
+            rustup run stable cargo run --bin revelio --release -- generate -p .circleci -u https://example.com
       # - run:
       #     name: Upload Coverage
       #     command: ./scripts/codecov.sh
