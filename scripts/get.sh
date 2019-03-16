@@ -7,7 +7,10 @@ wget $(curl -s https://api.github.com/repos/47ng/revelio/releases/latest \
 
 # Install to local bin
 chmod +x revelio
-mv revelio /usr/local/bin/
+mkdir -p .revelio/bin
+mv revelio .revelio/bin
+mv revelio.json .revelio/
+export PATH=$PATH:.revelio/bin
 
 # Print version information
 revelio --version
