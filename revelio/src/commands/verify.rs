@@ -21,7 +21,7 @@ pub fn run(url: &str) {
   println!("     Compare URL   {}", report.context.compare_url);
   println!("     Commit SHA-1  {}", report.context.commit_sha1);
   println!("");
-  println!("🔬  Validation:");
+  println!("🔬  Integrity:");
   println!("");
   let valid = report
     .artifacts
