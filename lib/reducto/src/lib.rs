@@ -1,12 +1,13 @@
 //! List files recursively in a directory along with their hash.
 #![deny(missing_docs)]
 
-use base64;
 use scourgify::url;
-use sha2::digest::FixedOutput;
-use sha2::{Digest, Sha256};
 use std::path::PathBuf;
 use walkdir::{DirEntry, WalkDir};
+
+pub mod hash;
+
+use hash::hash_file;
 
 /// Filesystem path to the artifact file.
 ///
@@ -66,14 +67,6 @@ fn ignore_previous_reports(entry: &DirEntry) -> bool {
   entry.file_name().to_str().unwrap_or("") != "revelio.json"
 }
 
-/// Generate the hash of a file's content
-fn hash_file(path: &ArtifactPath) -> std::io::Result<ArtifactHash> {
-  let contents = std::fs::read(path)?;
-  let mut hash = Sha256::default();
-  hash.input(contents);
-  Ok(format!("sha256:{}", base64::encode(&hash.fixed_result())))
-}
-
 /// Prepend a base_url to the artifact paths
 ///
 /// This will generate URLs where the artifacts can be publicly accessed.
@@ -91,20 +84,6 @@ fn prepend_url(path_map: ArtifactPathMap, base_url: &str) -> ArtifactUrlMap {
 }
 
 // -----------------------------------------------------------------------------
-
-#[test]
-fn hash_known_file() {
-  let path = PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/dummy.txt"));
-  let hash = hash_file(&path).unwrap();
-  assert_eq!(hash, "sha256:pWVAQ+fZlJcMoge/pDJpNPg7r+m8Joqcjw5eG7irQUg=");
-}
-
-#[test]
-fn hash_missing_file() {
-  let path = PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/does-not-exist"));
-  let hash = hash_file(&path);
-  assert!(hash.is_err());
-}
 
 #[test]
 fn prepend_domain() {
