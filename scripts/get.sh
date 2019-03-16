@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
 # Fetch the latest release
-wget $(curl -s https://api.github.com/repos/47ng/revelio/releases/latest \
-  | grep 'browser_download_url' \
-  | cut -d\" -f4)
+wget https://github.com/47ng/revelio/releases/download/0.1.2/revelio
 
 # Install to local bin
 chmod +x revelio
