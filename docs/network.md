@@ -28,9 +28,9 @@ an arbitrary amount of time, unbeknownst to the service.
 
 Once the server receives a verification request, it:
 
-1. Stores the URL in a queue, using the following algorithm:
-   - If the URL is not present in the queue, add it to the end of the queue,
-     with the following properties:
+1. Stores the request in a queue, using the following algorithm:
+   - If the request is not present in the queue, add it to the end of the queue,
+     with the following additional properties:
      ```
      {
        "retry": 0,
@@ -71,6 +71,8 @@ for each item in the queue:
 
   // Validation process starts
   log the verification event starting, with the hash of the contents of the file as an ID
+
+  verify the hash of the file
 
   for each url in the context section:
     send a GET request to the URL in the item
