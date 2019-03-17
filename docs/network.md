@@ -95,11 +95,6 @@ for each item in the queue:
     send an email with the failure report
 ```
 
-- Pop the URL at the head of the queue, test if it resolves.
-  - If it does, keep going with verification.
-  - If it doesn't, push it back to the end of the queue with an incremented
-    `retry` count. If the count reaches over a given threshold, drop the URL.
-
 ## Privacy
 
 For the sakes of transparency, verification logs shall be public and accessible
