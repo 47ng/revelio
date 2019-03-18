@@ -25,7 +25,7 @@ SUBCOMMANDS:
 
 ## Using Docker
 
-A [Docker image](../Dockerfile) is built and available at [`47ng/revelio`](https://hub.docker.com/47ng/revelio), with the following tags:
+A [Docker image](../Dockerfile) is built and available at [`47ng/revelio`](https://hub.docker.com/r/47ng/revelio), with the following tags:
 
 - `master` follows the `master` branch on GitHub
 - `{tag}` points to tagged releases (eg: `47ng/revelio:0.1.2`)
