@@ -95,9 +95,10 @@ fn find_commit_author_github() {
     commit_url: String::from("irrelevant"),
     compare_url: String::from("irrelevant"),
   };
-  let author = find_commit_author(&info).unwrap();
-  assert_eq!(author.name, "Francois Best");
-  assert_eq!(author.email, "francois@francoisbest.com");
+  if let Some(author) = find_commit_author(&info) {
+    assert_eq!(author.name, "Francois Best");
+    assert_eq!(author.email, "francois@francoisbest.com");
+  }
 }
 
 #[test]
@@ -109,7 +110,8 @@ fn find_commit_author_bitbucket() {
     commit_url: String::from("irrelevant"),
     compare_url: String::from("irrelevant"),
   };
-  let author = find_commit_author(&info).unwrap();
-  assert_eq!(author.name, "Francois Best");
-  assert_eq!(author.email, "francois@francoisbest.com");
+  if let Some(author) = find_commit_author(&info) {
+    assert_eq!(author.name, "Francois Best");
+    assert_eq!(author.email, "francois@francoisbest.com");
+  }
 }
