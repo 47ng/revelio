@@ -69,7 +69,7 @@ for each item in the queue:
     add the item to the retried list
     continue to the next item
 
-  // Validation process starts
+  // Verification process starts
   log the verification event starting, with the hash of the contents of the file as an ID
 
   verify the hash of the file

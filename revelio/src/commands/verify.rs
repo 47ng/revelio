@@ -23,7 +23,7 @@ pub fn run(url: &str) {
   println!("");
   println!("🔬  Integrity:");
   println!("");
-  let valid = report
+  let verified = report
     .artifacts
     .par_iter()
     .map(|(url, declared_hash)| {
@@ -41,10 +41,10 @@ pub fn run(url: &str) {
     })
     .reduce(|| true, |a, b| a & b);
   println!("");
-  if valid {
-    println!("✅  Validated {}", &url);
+  if verified {
+    println!("✅  Verified {}", &url);
   } else {
-    println!("❌  Failed validation for {}", &url);
+    println!("❌  Failed verification for {}", &url);
     std::process::exit(1);
   }
 }
