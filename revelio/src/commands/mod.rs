@@ -10,6 +10,7 @@ pub mod verify;
   about = "Generate and verify auditability on the web"
 )]
 pub enum Commands {
+  /// Generate a revelio.json manifest file to be deployed with your artifacts
   #[structopt(name = "generate")]
   Generate {
     #[structopt(short = "p")]
@@ -17,6 +18,8 @@ pub enum Commands {
     #[structopt(short = "u", long = "base-url")]
     base_url: String,
   },
+
+  /// Verify the integrity of artifacts on the given URL and print build context
   #[structopt(name = "verify")]
   Verify { url: String },
 }
