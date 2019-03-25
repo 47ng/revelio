@@ -72,6 +72,17 @@ against the actual client resources rather than requesting its own. It is
 possible to do so for desktop apps that keep their resources on the filesystem.
 For browser-based apps, there is no such way at the moment.
 
+However, if we suppose the attacker has had full control over the traffic for
+an unknown amount of time prior to the analysis, we cannot rely on the contents
+of the `revelio.json` file for verification, as it could have been intercepted
+and modified, nor can we trust the clear text information displayed in the
+public CI , which could also be altered by the attacker.
+
+We need a way to make sure an attacker has no way to forge a `revelio.json` for
+a given domain. The system must be able to verify this from anywhere, but only
+the authorized public CI will be the one signing the messages.
+Also, we want the system to be simple to use for those who wish to adopt Revelio.
+
 **Case 3**: An attacker does not have a way to compromise anything, but wishes
 to poison the verification process from the Revelio verification service.
 
