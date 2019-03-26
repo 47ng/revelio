@@ -1,4 +1,4 @@
-use crate::BuildInfo;
+use crate::Context;
 use envy;
 
 #[derive(Debug, Deserialize)]
@@ -36,7 +36,7 @@ impl Env {
 
 // --
 
-impl From<Env> for BuildInfo {
+impl From<Env> for Context {
   fn from(travis: Env) -> Self {
     let repo = format!("https://github.com/{}", travis.repo_slug);
     Self {
@@ -53,7 +53,7 @@ impl From<Env> for BuildInfo {
 
 #[test]
 fn from_env() {
-  let info: BuildInfo = (Env {
+  let info: Context = (Env {
     ci: true,
     travis: true,
     commit: String::from("cafebabe"),

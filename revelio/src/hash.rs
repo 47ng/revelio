@@ -1,6 +1,6 @@
 //! Hashing utilities
 
-use crate::{ArtifactHash, ArtifactPath};
+use crate::reducto::{ArtifactHash, ArtifactPath};
 use base64;
 use sha2::digest::FixedOutput;
 use sha2::{Digest, Sha256};
@@ -37,14 +37,17 @@ fn hash_byte_array() {
 
 #[test]
 fn hash_known_file() {
-  let path = std::path::PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/dummy.txt"));
+  let path = std::path::PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/../tests/dummy.txt"));
   let hash = hash_file(&path).unwrap();
   assert_eq!(hash, "sha256:pWVAQ+fZlJcMoge/pDJpNPg7r+m8Joqcjw5eG7irQUg=");
 }
 
 #[test]
 fn hash_missing_file() {
-  let path = std::path::PathBuf::from(concat!(env!("CARGO_MANIFEST_DIR"), "/tests/does-not-exist"));
+  let path = std::path::PathBuf::from(concat!(
+    env!("CARGO_MANIFEST_DIR"),
+    "/../tests/does-not-exist"
+  ));
   let hash = hash_file(&path);
   assert!(hash.is_err());
 }

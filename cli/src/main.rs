@@ -1,13 +1,12 @@
 //! Command-line tool to generate and verify auditability on the web.
 #![deny(missing_docs)]
 
-#[macro_use]
-extern crate serde_derive;
+// #[macro_use]
+// extern crate serde_derive;
 
 use structopt::StructOpt;
 
 mod commands;
-mod report;
 
 use commands::{run, Commands};
 

@@ -1,10 +1,12 @@
-use crate::BuildInfo;
+//! Definitions for supported Continuous Integration environments
+
+use crate::Context;
 
 mod circle;
 mod travis;
 
-impl BuildInfo {
-  /// Try to generate a BuildInfo by sniffing the environment
+impl Context {
+  /// Try to generate a Context by sniffing the environment
   ///
   /// This will call the available CI sniffers in turn.
   pub fn from_env() -> Option<Self> {

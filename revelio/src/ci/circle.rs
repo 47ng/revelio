@@ -1,4 +1,4 @@
-use crate::BuildInfo;
+use crate::Context;
 use envy;
 
 #[derive(Debug, Deserialize)]
@@ -45,7 +45,7 @@ impl Env {
 
 // --
 
-impl From<Env> for BuildInfo {
+impl From<Env> for Context {
   fn from(circle: Env) -> Self {
     let sources_url = match circle.git_url {
       ref url if url.contains("github") => format!(
@@ -77,7 +77,7 @@ impl From<Env> for BuildInfo {
 
 #[test]
 fn from_env_github() {
-  let info: BuildInfo = (Env {
+  let info: Context = (Env {
     ci: true,
     circleci: true,
     sha1: String::from("facade42"),
@@ -103,7 +103,7 @@ fn from_env_github() {
 
 #[test]
 fn from_env_bitbucket() {
-  let info: BuildInfo = (Env {
+  let info: Context = (Env {
     ci: true,
     circleci: true,
     sha1: String::from("facade42"),

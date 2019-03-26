@@ -1,10 +1,7 @@
 [workspace]
 members = [
   'revelio',
-  'lib/accio',
-  'lib/niffler',
-  'lib/reducto',
-  'lib/scourgify'
+  'cli',
 ]
 
 [profile.release]

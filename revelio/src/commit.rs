@@ -1,4 +1,4 @@
-use niffler::BuildInfo;
+use crate::Context;
 use regex::Regex;
 use reqwest;
 
@@ -42,7 +42,7 @@ struct BitBucketCommit {
 
 type AuthorResult = Result<GitCommitAuthor, Box<std::error::Error>>;
 
-fn github_extract_committer(info: &BuildInfo) -> AuthorResult {
+fn github_extract_committer(info: &Context) -> AuthorResult {
   let slug = info
     .sources_url
     .trim_start_matches("https://github.com/")
@@ -55,7 +55,7 @@ fn github_extract_committer(info: &BuildInfo) -> AuthorResult {
   Ok(data.author)
 }
 
-fn bitbucket_extract_committer(info: &BuildInfo) -> AuthorResult {
+fn bitbucket_extract_committer(info: &Context) -> AuthorResult {
   let slug = info
     .sources_url
     .trim_start_matches("https://bitbucket.org/")
@@ -73,10 +73,10 @@ fn bitbucket_extract_committer(info: &BuildInfo) -> AuthorResult {
 
 // -----------------------------------------------------------------------------
 
-/// Attempt to extract the committer email for a given BuildInfo
+/// Attempt to extract the committer email for a given Context
 ///
 /// This may fail for a variety of reasons.
-pub fn find_commit_author(info: &BuildInfo) -> Option<GitCommitAuthor> {
+pub fn find_commit_author(info: &Context) -> Option<GitCommitAuthor> {
   match &info.sources_url {
     url if url.starts_with("https://github.com") => github_extract_committer(info).ok(),
     url if url.starts_with("https://bitbucket.org") => bitbucket_extract_committer(info).ok(),
@@ -88,7 +88,7 @@ pub fn find_commit_author(info: &BuildInfo) -> Option<GitCommitAuthor> {
 
 #[test]
 fn find_commit_author_github() {
-  let info = BuildInfo {
+  let info = Context {
     build_url: String::from("irrelevant"),
     sources_url: String::from("https://github.com/47ng/revelio"),
     commit_sha1: String::from("3f5dd7c301184862f5da07cde403bfdc7609e61a"),
@@ -103,7 +103,7 @@ fn find_commit_author_github() {
 
 #[test]
 fn find_commit_author_bitbucket() {
-  let info = BuildInfo {
+  let info = Context {
     build_url: String::from("irrelevant"),
     sources_url: String::from("https://bitbucket.org/francoisbest/revelio"),
     commit_sha1: String::from("3f5dd7c301184862f5da07cde403bfdc7609e61a"),

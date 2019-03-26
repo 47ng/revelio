@@ -4,7 +4,7 @@
 /// (ie: not behind a paywall or requiring subscription to a free service).
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct BuildInfo {
+pub struct Context {
   /// URL of the build job on the CI platform
   ///
   /// Example: `https://travis-ci.com/47ng/revelio`

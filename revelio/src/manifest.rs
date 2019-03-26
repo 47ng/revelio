@@ -1,6 +1,9 @@
+use crate::{ArtifactUrlMap, Context};
+
+/// Structure of the `revelio.json` manifest file
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Report {
+pub struct Manifest {
   /// Version of the JSON file, to track schema changes
   pub version: u32,
 
@@ -8,8 +11,8 @@ pub struct Report {
   pub datetime: String,
 
   /// Public CI information
-  pub context: niffler::BuildInfo,
+  pub context: Context,
 
-  /// Dictionary of artifacts path: hash
-  pub artifacts: reducto::ArtifactUrlMap,
+  /// Dictionary of artifacts `url: hash`
+  pub artifacts: ArtifactUrlMap,
 }

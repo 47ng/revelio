@@ -1,10 +1,12 @@
+//! Utilities for working with URLs
+
 use log::warn;
 
 /// Make sure a URL is safe to use
 ///
 /// ## Usage
 /// ```
-/// use scourgify::url::sanitize;
+/// use revelio::url::sanitize;
 ///
 /// // Insert HTTPS and trailing slash:
 /// assert_eq!(sanitize("example.com"), "https://example.com/");

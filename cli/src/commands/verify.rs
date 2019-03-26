@@ -1,8 +1,8 @@
-use crate::report::Report;
 use rayon::prelude::*;
-use reducto::hash::hash;
 use reqwest;
-use scourgify::url;
+
+use revelio::url;
+use revelio::Manifest;
 
 pub fn run(url: &str) {
   let revelio_url = url::sanitize(url) + ".well-known/revelio.json";
@@ -11,26 +11,26 @@ pub fn run(url: &str) {
     println!("🔎  Could not read manifest from {}", revelio_url);
     return;
   }
-  let report: Report = response.unwrap().json().unwrap();
+  let manifest: Manifest = response.unwrap().json().unwrap();
   println!("🔎  Found {}", revelio_url);
   println!("🔨  Build context:");
   println!("");
-  println!("     Build         {}", report.context.build_url);
-  println!("     Sources       {}", report.context.sources_url);
-  println!("     Commit URL    {}", report.context.commit_url);
-  println!("     Compare URL   {}", report.context.compare_url);
-  println!("     Commit SHA-1  {}", report.context.commit_sha1);
+  println!("     Build         {}", manifest.context.build_url);
+  println!("     Sources       {}", manifest.context.sources_url);
+  println!("     Commit URL    {}", manifest.context.commit_url);
+  println!("     Compare URL   {}", manifest.context.compare_url);
+  println!("     Commit SHA-1  {}", manifest.context.commit_sha1);
   println!("");
   println!("🔬  Integrity:");
   println!("");
-  let verified = report
+  let verified = manifest
     .artifacts
     .par_iter()
     .map(|(url, declared_hash)| {
       let mut response = reqwest::get(url).unwrap().error_for_status().unwrap();
       let mut buf: Vec<u8> = vec![];
       response.copy_to(&mut buf).unwrap();
-      let computed_hash = &hash(&buf);
+      let computed_hash = &revelio::hash(&buf);
       if declared_hash == computed_hash {
         println!("  ✅  {}", url);
         true

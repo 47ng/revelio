@@ -1,13 +1,11 @@
 //! List files recursively in a directory along with their hash.
 #![deny(missing_docs)]
 
-use scourgify::url;
+use crate::hash::hash_file;
+use crate::url;
+
 use std::path::PathBuf;
 use walkdir::{DirEntry, WalkDir};
-
-pub mod hash;
-
-use hash::hash_file;
 
 /// Filesystem path to the artifact file.
 ///
@@ -34,7 +32,7 @@ pub type ArtifactUrlMap = std::collections::HashMap<ArtifactUrl, ArtifactHash>;
 /// If the given path is a file, it will be the only entry in the map.
 /// Otherwise, the directory will be recursively traversed to generate a flat
 /// map of path/hash key/value pairs.
-pub fn run(root_path: &PathBuf, base_url: &str) -> ArtifactUrlMap {
+pub fn scan_artifacts(root_path: &PathBuf, base_url: &str) -> ArtifactUrlMap {
   let mut map = ArtifactPathMap::new();
   if root_path.is_file() {
     map.insert(root_path.to_path_buf(), hash_file(&root_path).unwrap());
