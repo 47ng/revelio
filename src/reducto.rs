@@ -17,7 +17,7 @@ pub type ArtifactUrl = String;
 
 /// Cryptographic hash of the contents of the file
 ///
-/// Format is `{algorithm}:{base64 of hash(contents of the file)}`.
+/// Format is `{algorithm}:{base64 of hash(contents of the file)}`.<br/>
 /// Example: `sha256:XfZ1OW/e4KFHuo21GGVX/GhYLREzz4mjBcuYxJI7+WU=`
 pub type ArtifactHash = String;
 

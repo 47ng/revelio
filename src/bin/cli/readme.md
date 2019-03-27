@@ -41,7 +41,7 @@ $ docker run --rm -it 47ng/revelio verify https://example.com
 
 ### `generate`
 
-The `generate` subcommand is to be run in a CI server environment.
+The `generate` subcommand is to be run in a [CI server environment](../../../readme.md#usage).
 
 It will sniff out build context information (URLs to the sources, the build
 instance and Git information), and calculate checksum hashes for the built

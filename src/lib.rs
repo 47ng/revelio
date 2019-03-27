@@ -1,4 +1,4 @@
-//! List files recursively in a directory along with their hash.
+//! Auditability and integrity checks for open-source web projects
 #![deny(missing_docs)]
 
 #[macro_use]
