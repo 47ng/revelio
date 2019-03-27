@@ -4,7 +4,11 @@ rust:
 script:
   - cargo test  --all
   - cargo build --all --release
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 cache: cargo
+
+services:
+  - docker
 
 before_deploy:
   # Dogfood
@@ -13,6 +17,8 @@ before_deploy:
   - strip dist/revelio
   - dist/revelio generate -p ./dist -u https://github.com/47ng/revelio/releases/download/${TRAVIS_TAG}/
   - cat dist/.well-known/revelio.json
+  # Docker
+  - docker build -t 47ng/revelio:${TRAVIS_TAG} -t 47ng/revelio:latest .
 
 deploy:
   provider: releases
@@ -25,3 +31,12 @@ deploy:
   on:
     tags: true
     repo: 47ng/revelio
+
+after_deploy:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push 47ng/revelio:${TRAVIS_TAG} 47ng/revelio:latest
+
+env:
+  global:
+    - secure: fL9515goM1eftKYzGJLaPHq0ckjmDG3clMdka3P9vKqDVWZRqTj6BWh92SPpv5SuaeePk2xGGqYvyl80VQ04e5GoIteumYyuJCvFQmIirtM3MOx4zZLOX2KKk6e+DfdK/lYDWrxpsfxPMDbauDYJ4NpfRRDDfB/ROLwfVOi+Wv0gYvC2Y9MSCMCSPk1iRDyd4TwN4TbijdG3AuH0lg1qr4pETsdk6dfZLqjlB1wqvwQGZ+OjMSrtfWXmKHdtwBHK7zI2csr/2xv08+brKr2Dt6uureNKV3HeQcILeLTF2/CqKjM1R2XoLMV1GXjkxic0gYX2KWidUCNxd/ABWo6Y4simkvmXLxtn9XaPHWQK3FtlF6t9uTCPFbAZzXEHuk3A4rUkG1heFtF/AW+6XvZMzwNpEvhDLudowa1DTbzqYVz+SFkQTTmM+qj6iiLnziFPe/GE5UiVPlurUgBtwwH4fapSqbCQacH/otzZ6k6UDw2JtpHSNTHtUMtvT0DRNm7Kjc85Nf8K+q4aTX9KKNMbwsvatbuMRCCw49pXskaRnzj6NstbekcL7PUy0dZ9/29L1JJS/SEAOhZ892GDKGd38FYxx2x3SZcpWmHc6fn87zZRzYFVcIYIAxh9smoAayGubwulosPSlvrZtYuXmOU0c6EQi509t0rU+8NWb5i6XCk=
+    - secure: exXQ7Wl5lKEe6d0RJBkMz+VW5Uhh4ICpBhvTzUVd+wx41z6+mccYBUOY1ULVv3czVuhgTxtvwasnPoRju8EoryTFrSnmJ113wm7GeLzX5T5sGAwZOEJMBQwf7yw9NxVKViP1YN6g9oIu83gPnMJ14zBibc+9RahF2oV9PuiKW/8hVnzLkbARDMq5CnKt0XOE5Vr25hC2/N93KKHHvX7nvA93hfBOXUPjq+ZeLjq0kLHZzfOt+c5jZVStJc8cPmqsemWTIKCJPuMz1fg/zfbSDcNUVmTchbjdGNfkrseP6gTOkrKrl+0/HvSE6D1rj/7SNbQ2QIvF0abOpJ7Smf6R/4oPg/WahrHoyudULLtuStElwZSQUG9G8zrd7AsBk0MftKteaY459wMMJuLg2GCKr1A2pgG+misiZf6laudKL+CLdMxioF2vGBjYL68N/o8HPHhNbtIHrffdZ93akG9fpTU1D5m9uXPP8+zgDOtcGmnZWpT/NXUMwgO5us1oXtY8GiSifN0awnVnFOLo+oaiVIg/WsIIwp04ltodY/YfrEupMvu0bv5POrLBAg8LkVwpMG7rXqkD9ssDcqSHVjnkgIZWIGXFq/HMxxxxt438NA1S3mxLqyzobCqn62/iyQwOdVJK6oFXOUOks4fmIoKBQG2bt31wX9vsxGfsDwkQkuk=
