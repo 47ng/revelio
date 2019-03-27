@@ -1,6 +1,6 @@
 [package]
 name = "revelio"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Francois Best <contact@francoisbest.com>"]
 edition = "2018"
 description = "Auditability and integrity checks for open-source web projects"
