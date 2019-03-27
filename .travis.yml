@@ -3,9 +3,9 @@ rust:
   - stable
 
 script:
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
   - cargo test  --all
   - cargo build --all --release
-  - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
 
 cache: cargo
 
@@ -35,7 +35,7 @@ deploy:
     repo: 47ng/revelio
 
 after_deploy:
-  - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
   - docker push 47ng/revelio:${TRAVIS_TAG} 47ng/revelio:latest
 
 env:
