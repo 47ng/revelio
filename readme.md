@@ -34,7 +34,7 @@ Revelio automates transparency checks.
 - When running in a public CI, generate a `revelio.json` file.
 - Verify a URL that contains a public `/.well-known/revelio.json` file.
 
-For more details, see [the documentation for `revelio`](./revelio/readme.md).
+For more details, see [the documentation for `revelio`](./src/bin/cli/readme.md).
 
 ## FAQ
 
