@@ -6,7 +6,7 @@ extern crate lazy_static;
 #[macro_use]
 extern crate serde_derive;
 
-pub mod ci;
+mod ci;
 mod commit;
 mod context;
 mod hash;
