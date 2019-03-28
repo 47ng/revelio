@@ -14,10 +14,10 @@ services:
 cache: cargo
 
 script:
-  - cargo test  --all
-  - cargo build --all --release
+  - cargo test --all
 
 before_deploy:
+  - cargo build --all --release
   - mkdir -p dist
   - cp -f target/release/revelio ./dist
   - strip dist/revelio
@@ -39,21 +39,14 @@ deploy:
 
   # Docker image for master branch
   - provider: script
-    script:
-      - docker build -t 47ng/revelio:master .
-      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-      - docker push 47ng/revelio:master
+    script: scripts/deploy-docker-master.sh
     on:
       branch: master
       repo: 47ng/revelio
 
   # Docker image for tagged releases
   - provider: script
-    script:
-      - docker build -t 47ng/revelio:latest -t 47ng/revelio:${TRAVIS_TAG} .
-      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-      - docker push 47ng/revelio:latest
-      - docker push 47ng/revelio:${TRAVIS_TAG}
+    script: scripts/deploy-docker-tagged.sh
     on:
       tags: true
       repo: 47ng/revelio
