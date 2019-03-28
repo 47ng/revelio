@@ -1,43 +1,70 @@
 language: rust
 rust:
   - stable
+#  - nightly
 
-script:
-  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-  - cargo test  --all
-  - cargo build --all --release
-
-cache: cargo
+# matrix:
+#   allow_failures:
+#     - rust: nightly
+#   fast_finish: true
 
 services:
   - docker
 
+cache: cargo
+
+script:
+  - cargo test  --all
+  - cargo build --all --release
+
 before_deploy:
-  # Dogfood
   - mkdir -p dist
   - cp -f target/release/revelio ./dist
   - strip dist/revelio
   - dist/revelio generate -p ./dist -u https://github.com/47ng/revelio/releases/download/${TRAVIS_TAG}/
   - cat dist/.well-known/revelio.json
-  # Docker
-  - docker build -t 47ng/revelio:${TRAVIS_TAG} -t 47ng/revelio:latest .
 
 deploy:
-  provider: releases
-  api_key:
-    secure: uHh7mX+At04YOvSPzKeO185dHazxZPYTZFwqjVFY7WprUIHDLLFmmtRuQoOF9twWJM9RdDPNmfg0s4AEQiyQXte6AwBrOEIELcNLC/aTohTQ0ItZLXEtkzp1tFi85pI7wU52e72Zc6KzP9F2Ble4N+SLRxUfXp6o/giBSDRQ6J7FPNSFYSACVWYKY7/PiG1KJAnViDmnnF1mz3E9uD3xAnxJghGrbNZHk5/UzQes7BydGUfzfHbMcfcYWkTGnT8XaKOXnRqLhEvsE8NgVRmtA2LH5kBgURhSz5BxHs3IMLkMMfw3+W1sTQ0TU1g075bN8uRPbq/53upmQC+WAeKq0VedIyeudx7XqVpE9GUOUIyN8uEUkH+sOv5YU2d8Aw2HuJcSLD6RxW+IVrqIXLZoxc3P7CNRU2n1WyTEer4inPGfHWzU/P3qX+IL8wF5PfSS8hMEAE82xi8At0DXBLPAomr0HHsOJYTQzjTQyIjR7HbsV/DSiOI3LxqioFUnQfj5/dSB8hwnXvmNqF5c/MyII18PLN5fDOKIFBNdnyplufXdkIphN98r+GbjP1lrLalS83NwxLL9wsPf9ZFRhLvmYjes8+ese05ON/f3joLodi37O1d0ewy3GkFp5O78RWgpZAw/M2NBhmOxTGk0tD61ew9LK7Yi2fa8K+bN+dQrfEU=
-  file:
-    - dist/.well-known/revelio.json
-    - dist/revelio
-  skip_cleanup: true
-  on:
-    tags: true
-    repo: 47ng/revelio
+  # GitHub releases
+  - provider: releases
+    api_key:
+      secure: uHh7mX+At04YOvSPzKeO185dHazxZPYTZFwqjVFY7WprUIHDLLFmmtRuQoOF9twWJM9RdDPNmfg0s4AEQiyQXte6AwBrOEIELcNLC/aTohTQ0ItZLXEtkzp1tFi85pI7wU52e72Zc6KzP9F2Ble4N+SLRxUfXp6o/giBSDRQ6J7FPNSFYSACVWYKY7/PiG1KJAnViDmnnF1mz3E9uD3xAnxJghGrbNZHk5/UzQes7BydGUfzfHbMcfcYWkTGnT8XaKOXnRqLhEvsE8NgVRmtA2LH5kBgURhSz5BxHs3IMLkMMfw3+W1sTQ0TU1g075bN8uRPbq/53upmQC+WAeKq0VedIyeudx7XqVpE9GUOUIyN8uEUkH+sOv5YU2d8Aw2HuJcSLD6RxW+IVrqIXLZoxc3P7CNRU2n1WyTEer4inPGfHWzU/P3qX+IL8wF5PfSS8hMEAE82xi8At0DXBLPAomr0HHsOJYTQzjTQyIjR7HbsV/DSiOI3LxqioFUnQfj5/dSB8hwnXvmNqF5c/MyII18PLN5fDOKIFBNdnyplufXdkIphN98r+GbjP1lrLalS83NwxLL9wsPf9ZFRhLvmYjes8+ese05ON/f3joLodi37O1d0ewy3GkFp5O78RWgpZAw/M2NBhmOxTGk0tD61ew9LK7Yi2fa8K+bN+dQrfEU=
+    file:
+      - dist/.well-known/revelio.json
+      - dist/revelio
+    skip_cleanup: true
+    on:
+      tags: true
+      repo: 47ng/revelio
 
-after_deploy:
-  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-  - docker push 47ng/revelio:${TRAVIS_TAG}
-  - docker push 47ng/revelio:latest
+  # Docker image for master branch
+  - provider: script
+    script:
+      - docker build -t 47ng/revelio:master .
+      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+      - docker push 47ng/revelio:master
+    on:
+      branch: master
+      repo: 47ng/revelio
+
+  # Docker image for tagged releases
+  - provider: script
+    script:
+      - docker build -t 47ng/revelio:latest -t 47ng/revelio:${TRAVIS_TAG} .
+      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+      - docker push 47ng/revelio:latest
+      - docker push 47ng/revelio:${TRAVIS_TAG}
+    on:
+      tags: true
+      repo: 47ng/revelio
+
+  # Publish crate on tagged releases
+  - provider: cargo
+    token:
+      secure: fjB6CSZa28UzhG0WYvc67hPm33mhoKPD+MF7kWFQ54VWS+tbXo8QFFIyTLB/wtS/kwNK8qrvNEf+9DkfqseM1106+aA1oXS6gZ4o+oMagMX3l3Ch+00up5cWGfE/n+Iu8gUQ1k7imDJim0VkB52VCtm79vdda3JdlTZKB1/EARXTPSQOzbhHqmShBhUFIxIhdJ9r713uyLWRu4VIaUHURL8OGGHDuR7rOkaqaADsSX7JDtzMTm4FEn8zA/OfQjY9Vb0H0cdwmseo+vcn+Rhy0fZYwDiMxkfM0lCFOlRAFk7IW0IENbKUSwwquGjRv6jwp5U+8xIVFWMTeaY/LihlqqdLpUwsMC3JpLBCW4g/yLh4mAk85hA1G0ORrdG4FoW0qOPEe8htJEe8lSK1rzREBZwKf4VZ7nm9emzzH9uzb1j3YNwbfVeugG1gjfpN9WdG/El4uNgZvIMdJaU8901N30bq7tuOwULXr1+stU/IF08H/ajfVHHjBR6bFD94HPQu+4sOVc+XBDDzMgUho5xdIc2ngoSjz8N8wKx993E0GNGx1IyYdUMw69qb6rAXTHBvQihqpfXbEuCfNH8R6lMQ9dzSTnYYDxgGmM//+Aqbh3SUH65wiQVBP2n3b2s+v4d+i9RK8gRyU7HhBkaJM7i9YupUdH8iwX67VlRFmrGUgAk=
+    on:
+      tags: true
+      repo: 47ng/revelio
 
 env:
   global:
