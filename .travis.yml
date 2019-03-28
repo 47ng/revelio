@@ -41,6 +41,7 @@ deploy:
   - provider: script
     script: scripts/deploy-docker-master.sh
     on:
+      tags: false
       branch: master
       repo: 47ng/revelio
 
