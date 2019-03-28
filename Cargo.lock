@@ -984,7 +984,7 @@ dependencies = [
 
 [[package]]
 name = "revelio"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "base64 0.10.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "chrono 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
